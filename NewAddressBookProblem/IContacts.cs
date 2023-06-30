@@ -12,5 +12,6 @@ namespace NewAddressBookProblem
         public void ViewContact(string name);
         public void EditContact(string name);
         public void DeleteContact(string name);
+        public void AddAddressBook(string bookName);
     }
 }
