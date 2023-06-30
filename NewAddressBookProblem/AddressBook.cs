@@ -1,27 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace NewAddressBookProblem
 {
-    class AddressBook : IContacts
+    class AddressBook
     {
         private Dictionary<string, Contact> addressBook = new Dictionary<string, Contact>();
         private Dictionary<string, AddressBook> addressBookDictionary = new Dictionary<string, AddressBook>();
         public void AddContact(string firstName, string lastName, string address, string city, string state, string email, int zip, long phoneNumber, string bookName)
         {
-            Contact contact = new Contact();
-            contact.FirstName = firstName;
-            contact.LastName = lastName;
-            contact.Address = address;
-            contact.City = city;
-            contact.State = state;
-            contact.Email = email;
-            contact.Zip = zip;
-            contact.PhoneNumber = phoneNumber;
-            addressBookDictionary[bookName].addressBook.Add(contact.FirstName, contact);
+            Contact contact = new Contact(firstName, lastName, address, city, state, email, zip, phoneNumber);
+            addressBookDictionary[bookName].addressBook.Add(contact.FirstName + " " + contact.LastName, contact);
             Console.WriteLine("\nAdded Succesfully. \n");
         }
         public void ViewContact(string name, string bookName)
@@ -124,9 +117,59 @@ namespace NewAddressBookProblem
         {
             return addressBookDictionary;
         }
+        public List<Contact> GetListOfDictctionaryKeys(string bookName)
+        {
+            List<Contact> book = new List<Contact>();
+            foreach (var value in addressBookDictionary[bookName].addressBook.Values)
+            {
+                book.Add(value);
+            }
+            return book;
+        }
+        public List<Contact> GetListOfDictctionaryKeys2(Dictionary<string, Contact> d)
+        {
+            List<Contact> book = new List<Contact>();
+            foreach (var value in d.Values)
+            {
+                book.Add(value);
+            }
+            return book;
+        }
+        public bool CheckDuplicateEntry(Contact c, string bookName)
+        {
+            List<Contact> book = GetListOfDictctionaryKeys(bookName);
+            if (book.Any(b => b.Equals(c)))
+            {
+                Console.WriteLine("Name already Exists.");
+                return true;
+            }
+            return false;
+        }
+        public void SearchPersonByCity(string city)
+        {
+            foreach (AddressBook addressbookobj in addressBookDictionary.Values)
+            {
+                List<Contact> contactList = GetListOfDictctionaryKeys2(addressbookobj.addressBook);
+                foreach (Contact contact in contactList.FindAll(c => c.City.Equals(city)).ToList())
+                {
+                    Console.WriteLine(contact.ToString());
+                }
+            }
+        }
+        public void SearchPersonByState(string state)
+        {
+            foreach (AddressBook addressbookobj in addressBookDictionary.Values)
+            {
+                List<Contact> contactList = GetListOfDictctionaryKeys2(addressbookobj.addressBook);
+                foreach (Contact contact in contactList.FindAll(c => c.State.Equals(state)).ToList())
+                {
+                    Console.WriteLine(contact.ToString());
+                }
+            }
+        }
     }
 }
-}
+
     
 
 
